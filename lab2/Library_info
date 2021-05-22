@@ -1,0 +1,58 @@
+cqlsh
+cqlsh> create keyspace library with replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+cqlsh> create table library.info(stud_id int,stud_name text,book_name text,book_id int,counter_value counter,primary key(stud_id,stud_name,book_name,book_id ));
+cqlsh> update library.info set counter_value = counter_value + 1 where stud_id = 112 and stud_name = 'Oscar' and book_name = 'Java' and book_id = 111;
+cqlsh> select * from library_info;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="No keyspace has been specified. USE a keyspace, or explicitly specify keyspace.tablename"
+cqlsh> select * from library.info;
+
+ stud_id | stud_name | book_name | book_id | counter_value
+---------+-----------+-----------+---------+---------------
+     112 |     Oscar |      Java |     111 |             1
+
+(1 rows)
+cqlsh> update library_info set counter_value = counter_value + 1 where stud_id = 113 and stud_name = 'Divya' and book_name = 'C++' and book_id = 121;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="No keyspace has been specified. USE a keyspace, or explicitly specify keyspace.tablename"
+cqlsh> update library.info set counter_value = counter_value + 1 where stud_id = 113 and stud_name = 'Divya' and book_name = 'C++' and book_id = 121 and doi = '2002-08-22';
+InvalidRequest: Error from server: code=2200 [Invalid query] message="Undefined column name doi"
+cqlsh> update library.info set counter_value = counter_value + 1 where stud_id = 113 and stud_name = 'Divya' and book_name = 'C++' and book_id = 121 ;
+cqlsh> update library.info set counter_value = counter_value + 1 where stud_id = 114 and stud_name = 'karan' and book_name = 'C' and book_id = 221;
+cqlsh> update library.info set counter_value = counter_value + 2 where stud_id = 115 and stud_name = 'naidu' and book_name = 'BDA' and book_id = 321;
+cqlsh> select * from library_info;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="No keyspace has been specified. USE a keyspace, or explicitly specify keyspace.tablename"
+cqlsh> select * from library.info;
+
+ stud_id | stud_name | book_name | book_id | counter_value
+---------+-----------+-----------+---------+---------------
+     114 |     karan |         C |     221 |             1
+     113 |     Divya |       C++ |     121 |             1
+     112 |     Oscar |      Java |     111 |             1
+     115 |     naidu |       BDA |     321 |             2
+
+(4 rows)
+cqlsh> select * from library_info where counter_value = 2 allow filtering;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="No keyspace has been specified. USE a keyspace, or explicitly specify keyspace.tablename"
+cqlsh> select * from library.info where counter_value = 2 allow filtering;
+
+ stud_id | stud_name | book_name | book_id | counter_value
+---------+-----------+-----------+---------+---------------
+     115 |     naidu |       BDA |     321 |             2
+
+(1 rows)
+cqlsh>  copy library.info(stud_id, stud_name, book_name, book_id, doi, counter_value) to '/library_info.csv';
+Using 3 child processes
+cqlsh>  copy library.info(stud_id, stud_name, book_name, book_id, counter_value) to '/home/karan/Downloads/BMS/BDA LAB/lab2/library_info.csv';
+Using 3 child processes
+
+Starting copy of library.info with columns [stud_id, stud_name, book_name, book_id, counter_value].
+Processed: 4 rows; Rate:      18 rows/s; Avg. rate:      18 rows/s
+4 rows exported to 1 files in 0.230 seconds.
+cqlsh> copy library.info(stud_id, stud_name, book_name, book_id,  counter_value) from '/home/karan/Downloads/BMS/BDA LAB/lab2/library_info.csv';
+Using 3 child processes
+
+Starting copy of library.info with columns [stud_id, stud_name, book_name, book_id, counter_value].
+Processed: 4 rows; Rate:       5 rows/s; Avg. rate:       8 rows/s
+4 rows imported from 1 files in 0.480 seconds (0 skipped).
+cqlsh> 
+
+

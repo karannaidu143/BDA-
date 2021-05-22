@@ -1,0 +1,183 @@
+karan@karan-HP-Pavilion-Power-Laptop:~$ create keyspace employee with replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+
+Command 'create' not found, did you mean:
+
+  command 'pcreate' from deb pbuilder-scripts (22)
+
+Try: sudo apt install <deb name>
+
+karan@karan-HP-Pavilion-Power-Laptop:~$ cqslh
+cqslh: command not found
+karan@karan-HP-Pavilion-Power-Laptop:~$ cqlsh
+Connected to Test Cluster at 127.0.0.1:9042.
+[cqlsh 5.0.1 | Cassandra 3.11.10 | CQL spec 3.4.4 | Native protocol v4]
+Use HELP for help.
+cqlsh> create keyspace employee with replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+cqlsh> create keyspace employee with replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+[1]+  Stopped                 cqlsh
+karan@karan-HP-Pavilion-Power-Laptop:~$ cqlsh
+Connected to Test Cluster at 127.0.0.1:9042.
+[cqlsh 5.0.1 | Cassandra 3.11.10 | CQL spec 3.4.4 | Native protocol v4]
+Use HELP for help.
+cqlsh> create keyspace employee with replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+AlreadyExists: Keyspace 'employee' already exists
+cqlsh> describe keyspaces
+
+system_schema  system_auth  system  system_distributed  employee  system_traces
+
+cqlsh> use employee
+   ... create table employee_info(emp_id int primary key, emp_name text, designation text, doj timestamp, salary double, dept_name text);
+cqlsh> create table employee_info(emp_id int primary key, emp_name text, designation text, doj timestamp, salary double, dept_name text);
+InvalidRequest: Error from server: code=2200 [Invalid query] message="No keyspace has been specified. USE a keyspace, or explicitly specify keyspace.tablename"
+cqlsh> create table employee_info(emp_id int primary key, emp_name text, designation text, doj timestamp, salary double, dept_name text);
+[2]+  Stopped                 cqlsh
+karan@karan-HP-Pavilion-Power-Laptop:~$ cqlsh
+Connected to Test Cluster at 127.0.0.1:9042.
+[cqlsh 5.0.1 | Cassandra 3.11.10 | CQL spec 3.4.4 | Native protocol v4]
+Use HELP for help.
+cqlsh> describe keyspaces
+
+system_schema  system_auth  system  system_distributed  employee  system_traces
+
+cqlsh> use employee
+   ... 
+   ... 
+   ... 
+   ... 
+Statements are terminated with a ';'.  You can press CTRL-C to cancel an incomplete statement.
+   ... 
+   ... 
+cqlsh> create table employee_info(emp_id int primary key, emp_name text, designation text, doj timestamp, salary double, dept_name text);
+InvalidRequest: Error from server: code=2200 [Invalid query] message="No keyspace has been specified. USE a keyspace, or explicitly specify keyspace.tablename"
+cqlsh> create table employee.info(emp_id int primary key, emp_name text, designation text, doj timestamp, salary double, dept_name text);
+cqlsh> describe tableinfo
+
+'tableinfo' not found in keyspaces
+cqlsh> describe table info
+No keyspace specified and no current keyspace
+cqlsh> describe table employeeinfo
+No keyspace specified and no current keyspace
+cqlsh> describe table employee.info
+
+CREATE TABLE employee.info (
+    emp_id int PRIMARY KEY,
+    dept_name text,
+    designation text,
+    doj timestamp,
+    emp_name text,
+    salary double
+) WITH bloom_filter_fp_chance = 0.01
+    AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
+    AND comment = ''
+    AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}
+    AND compression = {'chunk_length_in_kb': '64', 'class': 'org.apache.cassandra.io.compress.LZ4Compressor'}
+    AND crc_check_chance = 1.0
+    AND dclocal_read_repair_chance = 0.1
+    AND default_time_to_live = 0
+    AND gc_grace_seconds = 864000
+    AND max_index_interval = 2048
+    AND memtable_flush_period_in_ms = 0
+    AND min_index_interval = 128
+    AND read_repair_chance = 0.0
+    AND speculative_retry = '99PERCENTILE';
+
+cqlsh> begin batch
+   ... insert into employee_info(emp_id, emp_name, designation, doj, salary, dept_name) values (1, 'karan', 'CEO', '2000-05-05', 212212, 'web');
+   ... insert into employee_info(emp_id, emp_name, designation, doj, salary, dept_name) values (2, 'naidu', 'CfO', '2000-05-05', 212212, 'software');
+   ... insert into employee_info(emp_id, emp_name, designation, doj, salary, dept_name) values (3, 'tom', 'engineer', '2010-03-07', 4587, 'software');
+   ... apply batch;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="No keyspace has been specified. USE a keyspace, or explicitly specify keyspace.tablename"
+cqlsh> begin batch insert into employee.info(emp_id, emp_name, designation, doj, salary, dept_name) values (1, 'karan', 'CEO', '2000-05-05', 212212, 'web'); insert into employee.info(emp_id, emp_name, designation, doj, salary, dept_name) values (2, 'naidu', 'CfO', '2000-05-05', 212212, 'software'); insert into employee.info(emp_id, emp_name, designation, doj, salary, dept_name) values (3, 'tom', 'engineer', '2010-03-07', 4587, 'software'); apply batch;
+cqlsh> select * from employee_info;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="No keyspace has been specified. USE a keyspace, or explicitly specify keyspace.tablename"
+cqlsh> select * from employee.info;
+
+ emp_id | dept_name | designation | doj                             | emp_name | salary
+--------+-----------+-------------+---------------------------------+----------+------------
+      1 |       web |         CEO | 2000-05-04 18:30:00.000000+0000 |    karan | 2.1221e+05
+      2 |  software |         CfO | 2000-05-04 18:30:00.000000+0000 |    naidu | 2.1221e+05
+      3 |  software |    engineer | 2010-03-06 18:30:00.000000+0000 |      tom |       4587
+
+(3 rows)
+cqlsh> begin batch insert into employee.info(emp_id, emp_name, designation, doj, salary, dept_name) values (121, 'John', 'CTO', '2011-03-02', 3214566, 'web'); apply batch;
+cqlsh> select * from employee_info;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="No keyspace has been specified. USE a keyspace, or explicitly specify keyspace.tablename"
+cqlsh> select * from employee_info;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="No keyspace has been specified. USE a keyspace, or explicitly specify keyspace.tablename"
+cqlsh> select * from employee.info;
+
+ emp_id | dept_name | designation | doj                             | emp_name | salary
+--------+-----------+-------------+---------------------------------+----------+------------
+      1 |       web |         CEO | 2000-05-04 18:30:00.000000+0000 |    karan | 2.1221e+05
+      2 |  software |         CfO | 2000-05-04 18:30:00.000000+0000 |    naidu | 2.1221e+05
+    121 |       web |         CTO | 2011-03-01 18:30:00.000000+0000 |     John | 3.2146e+06
+      3 |  software |    engineer | 2010-03-06 18:30:00.000000+0000 |      tom |       4587
+
+(4 rows)
+cqlsh> update employee.info set emp_name = 'Jack', dept_name = 'Software' where emp_id = 121;
+cqlsh> select * from employee.info;
+
+ emp_id | dept_name | designation | doj                             | emp_name | salary
+--------+-----------+-------------+---------------------------------+----------+------------
+      1 |       web |         CEO | 2000-05-04 18:30:00.000000+0000 |    karan | 2.1221e+05
+      2 |  software |         CfO | 2000-05-04 18:30:00.000000+0000 |    naidu | 2.1221e+05
+    121 |  Software |         CTO | 2011-03-01 18:30:00.000000+0000 |     Jack | 3.2146e+06
+      3 |  software |    engineer | 2010-03-06 18:30:00.000000+0000 |      tom |       4587
+
+(4 rows)
+cqlsh> update employee.info set emp_name = 'Jack', dept_name = 'Software' where emp_id = 121;
+[3]+  Stopped                 cqlsh
+karan@karan-HP-Pavilion-Power-Laptop:~$ cqlsh
+Connected to Test Cluster at 127.0.0.1:9042.
+[cqlsh 5.0.1 | Cassandra 3.11.10 | CQL spec 3.4.4 | Native protocol v4]
+Use HELP for help.
+cqlsh> create index on employee.info(salary);
+cqlsh> select * from employee.info;
+
+ emp_id | dept_name | designation | doj                             | emp_name | salary
+--------+-----------+-------------+---------------------------------+----------+------------
+      1 |       web |         CEO | 2000-05-04 18:30:00.000000+0000 |    karan | 2.1221e+05
+      2 |  software |         CfO | 2000-05-04 18:30:00.000000+0000 |    naidu | 2.1221e+05
+    121 |  Software |         CTO | 2011-03-01 18:30:00.000000+0000 |     Jack | 3.2146e+06
+      3 |  software |    engineer | 2010-03-06 18:30:00.000000+0000 |      tom |       4587
+
+(4 rows)
+cqlsh> alter table employee_info add projects set<text>;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="No keyspace has been specified. USE a keyspace, or explicitly specify keyspace.tablename"
+cqlsh> alter table employee.info add projects set<text>;
+cqlsh> update employee_info set projects = {'Test', 'Start'} where emp_id in(1,2,3,121);
+InvalidRequest: Error from server: code=2200 [Invalid query] message="No keyspace has been specified. USE a keyspace, or explicitly specify keyspace.tablename"
+cqlsh> update employee.info set projects = {'Test', 'Start'} where emp_id in(1,2,3,121);
+cqlsh> select * from employee.info;
+
+ emp_id | dept_name | designation | doj                             | emp_name | projects          | salary
+--------+-----------+-------------+---------------------------------+----------+-------------------+------------
+      1 |       web |         CEO | 2000-05-04 18:30:00.000000+0000 |    karan | {'Start', 'Test'} | 2.1221e+05
+      2 |  software |         CfO | 2000-05-04 18:30:00.000000+0000 |    naidu | {'Start', 'Test'} | 2.1221e+05
+    121 |  Software |         CTO | 2011-03-01 18:30:00.000000+0000 |     Jack | {'Start', 'Test'} | 3.2146e+06
+      3 |  software |    engineer | 2010-03-06 18:30:00.000000+0000 |      tom | {'Start', 'Test'} |       4587
+
+(4 rows)
+cqlsh> begin batch insert into employee.info(emp_id, emp_name, designation, doj, salary, dept_name) values (121, 'Boris', 'MTO', '2001-08-05', 12212, 'Corporate') using ttl 120; apply batch;
+cqlsh> select * from employee.info;
+
+ emp_id | dept_name | designation | doj                             | emp_name | projects          | salary
+--------+-----------+-------------+---------------------------------+----------+-------------------+------------
+      1 |       web |         CEO | 2000-05-04 18:30:00.000000+0000 |    karan | {'Start', 'Test'} | 2.1221e+05
+      2 |  software |         CfO | 2000-05-04 18:30:00.000000+0000 |    naidu | {'Start', 'Test'} | 2.1221e+05
+    121 | Corporate |         MTO | 2001-08-04 18:30:00.000000+0000 |    Boris | {'Start', 'Test'} |      12212
+      3 |  software |    engineer | 2010-03-06 18:30:00.000000+0000 |      tom | {'Start', 'Test'} |       4587
+
+(4 rows)
+cqlsh> select ttl(designation) from employee_info where emp_id = 121;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="No keyspace has been specified. USE a keyspace, or explicitly specify keyspace.tablename"
+cqlsh> select ttl(designation) from employee.info where emp_id = 121;
+
+ ttl(designation)
+------------------
+               84
+
+(1 rows)
+cqlsh> 
+
+
